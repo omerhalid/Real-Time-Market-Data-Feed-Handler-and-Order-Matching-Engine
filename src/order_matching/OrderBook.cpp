@@ -103,4 +103,7 @@ public:
             AddOrder(id, newQuantity, newPrice, oldOrder.isBuyOrder);
         }
     }
+
+    auto getBuyOrders() {return buyOrders;}
+    auto getSellOrders() {return sellOrders;}
 };
