@@ -3,7 +3,7 @@
 #include <curl/curl.h>
 #include "../json/json.hpp"
 
-static std::string apiKey = "RKXX7ZEZFNQTJLRH"; 
+static std::string apiKey = ""; 
 
 // Function to handle the response from cURL
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
