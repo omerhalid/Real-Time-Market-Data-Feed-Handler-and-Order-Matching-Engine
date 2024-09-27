@@ -3,8 +3,8 @@
 
 class Matcher
 {
-    OrderBook orderBook; // Instance of OrderBook
-    void MatchOrders()
+public:
+    void MatchOrders(OrderBook& orderBook)
     {
         while(!orderBook.getBuyOrders().empty() && !orderBook.getSellOrders().empty())
             {

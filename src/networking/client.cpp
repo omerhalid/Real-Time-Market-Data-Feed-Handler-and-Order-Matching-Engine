@@ -36,7 +36,7 @@ public:
     }
 
     // Function to handle the response from cURL
-    size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
+    static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
         ((std::string*)userp)->append((char*)contents, size * nmemb);
         return size * nmemb;
     }
@@ -72,19 +72,36 @@ public:
         return readBuffer;
     }
 
-    // Function to parse JSON response
-    void parseMarketData(const std::string& jsonData) {
-        try {
-            auto json = nlohmann::json::parse(jsonData);
-            std::cout << json.dump(4) << std::endl; // Pretty print the JSON data
+    // Function to send a request to the server
+    std::string sendRequestToServer(const std::string& serverAddress, const nlohmann::json& requestJson) {
+        CURL* curl;
+        CURLcode res;
+        std::string readBuffer;
 
-            // Example: Parsing specific fields
-            std::string symbol = json["Meta Data"]["2. Symbol"];
-            double closePrice = json["Time Series (5min)"]["2023-09-22 16:00:00"]["4. close"];
-            std::cout << "Symbol: " << symbol << ", Close Price: " << closePrice << std::endl;
-
-        } catch (const nlohmann::json::parse_error& e) {
-            std::cerr << "JSON parse error: " << e.what() << std::endl;
+        curl = curl_easy_init();
+        if(curl) {
+            std::string url = serverAddress;
+            std::string requestData = requestJson.dump();
+            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, requestData.c_str());
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+            curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);  // Timeout
+            // Disable SSL verification (not recommended for production)
+            curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+            curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+            res = curl_easy_perform(curl);
+            if(res != CURLE_OK) {
+                std::cerr << "cURL error: " << curl_easy_strerror(res) << std::endl;
+            }
+            curl_easy_cleanup(curl);
+        } else {
+            std::cerr << "Failed to initialize cURL" << std::endl;
         }
+
+        // Print the response for debugging
+        std::cout << "Response: " << readBuffer << std::endl;
+
+        return readBuffer;
     }
 };

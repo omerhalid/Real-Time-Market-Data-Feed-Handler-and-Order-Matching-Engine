@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\katka\source\market_data_handler\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\build\CMakeFiles\94b22824d65ad847da19a88c0a7f00a8\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{7F05DDED-F8BF-3B19-BB2E-898FB858D575}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
