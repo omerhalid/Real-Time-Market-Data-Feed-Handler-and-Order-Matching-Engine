@@ -1,4 +1,4 @@
-#include "Client.hpp"
+#include "../include/networking/Client.hpp"
 
 // Function to load environment variables from a .env file
 void Client::loadEnv() {

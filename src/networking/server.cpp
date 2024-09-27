@@ -1,4 +1,4 @@
-#include "Server.hpp"
+#include "../include/networking/Server.hpp"
 
 Server::Server(boost::asio::io_context& io_context, short port)
     : acceptor_(io_context, tcp::endpoint(tcp::v4(), port)) {
@@ -6,7 +6,7 @@ Server::Server(boost::asio::io_context& io_context, short port)
 }
 
 void Server::acceptConnection() {
-    auto socket = std::make_shared<tcp::socket>(acceptor_.get_executor().context());
+    auto socket = std::make_shared<tcp::socket>(acceptor_.get_executor());
     acceptor_.async_accept(*socket, [this, socket](boost::system::error_code ec) {
         if (!ec) {
             std::cout << "New client connected!" << std::endl;

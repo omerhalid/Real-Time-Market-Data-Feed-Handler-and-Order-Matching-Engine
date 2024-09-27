@@ -696,3 +696,44 @@ events:
       Running the CXX compiler's linker: "Configured with: ../configure --prefix=/R/winlibs64ucrt_stage/inst_gcc-14.2.0/share/gcc --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --enable-offload-targets=nvptx-none --with-pkgversion='MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r1' --with-tune=generic --enable-checking=release --enable-threads=posix --disable-sjlj-exceptions --disable-libunwind-exceptions --disable-serial-configure --disable-bootstrap --enable-host-shared --enable-plugin --disable-default-ssp --disable-rpath --disable-libstdcxx-debug --disable-version-specific-runtime-libs --with-stabs --disable-symvers --enable-languages=c,c++,fortran,lto,objc,obj-c++ --disable-gold --disable-nls --disable-stage1-checking --disable-win32-registry --disable-multilib --enable-ld --enable-libquadmath --enable-libada --enable-libssp --enable-libstdcxx --enable-lto --enable-fully-dynamic-string --enable-libgomp --enable-graphite --enable-mingw-wildcard --enable-libstdcxx-time --enable-libstdcxx-pch --with-mpc=/d/Prog/winlibs64ucrt_stage/custombuilt --with-mpfr=/d/Prog/winlibs64ucrt_stage/custombuilt --with-gmp=/d/Prog/winlibs64ucrt_stage/custombuilt --with-isl=/d/Prog/winlibs64ucrt_stage/custombuilt --disable-libstdcxx-backtrace --enable-install-libiberty --enable-__cxa_atexit --without-included-gettext --with-diagnostics-color=auto --enable-clocale=generic --with-libiconv --with-system-zlib --with-build-sysroot=/R/winlibs64ucrt_stage/gcc-14.2.0/build_mingw/mingw-w64 CFLAGS='-D__USE_MINGW_ANSI_STDIO=0 -I/d/Prog/winlibs64ucrt_stage/custombuilt/include/libdl-win32   -march=nocona -msahf -mtune=generic -O2 -Wno-error=format' CXXFLAGS='-D__USE_MINGW_ANSI_STDIO=0 -Wno-int-conversion  -march=nocona -msahf -mtune=generic -O2' LDFLAGS='-pthread -Wl,--no-insert-timestamp -Wl,--dynamicbase -Wl,--high-entropy-va -Wl,--nxcompat -Wl,--tsaware' LD=/d/Prog/winlibs64ucrt_stage/custombuilt/share/binutils/bin/ld.exe" "--version"
       
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.29/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.29/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "C:/Program Files/CMake/share/cmake-3.29/Modules/FindThreads.cmake:97 (CHECK_C_SOURCE_COMPILES)"
+      - "C:/Program Files/CMake/share/cmake-3.29/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "C:/Program Files/CMake/share/cmake-3.29/Modules/FindBoost.cmake:2144 (find_package)"
+      - "CMakeLists.txt:21 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/CMakeFiles/CMakeScratch/TryCompile-igyvhi"
+      binary: "C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/CMakeFiles/CMakeScratch/TryCompile-igyvhi"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/CMakeFiles/CMakeScratch/TryCompile-igyvhi'
+        
+        Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/Users/katka/Downloads/winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.1.8-mingw-w64ucrt-12.0.0-r1/mingw64/bin/mingw32-make.exe -f Makefile cmTC_1221e/fast
+        C:/Users/katka/Downloads/winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.1.8-mingw-w64ucrt-12.0.0-r1/mingw64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_1221e.dir\\build.make CMakeFiles/cmTC_1221e.dir/build
+        mingw32-make[1]: Entering directory 'C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/CMakeFiles/CMakeScratch/TryCompile-igyvhi'
+        Building C object CMakeFiles/cmTC_1221e.dir/src.c.obj
+        C:\\Users\\katka\\Downloads\\winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.1.8-mingw-w64ucrt-12.0.0-r1\\mingw64\\bin\\gcc.exe -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles\\cmTC_1221e.dir\\src.c.obj -c C:\\Users\\katka\\source\\market_data_handler\\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-igyvhi\\src.c
+        Linking C executable cmTC_1221e.exe
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_link_script CMakeFiles\\cmTC_1221e.dir\\link.txt --verbose=1
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f CMakeFiles\\cmTC_1221e.dir/objects.a
+        C:\\Users\\katka\\Downloads\\winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.1.8-mingw-w64ucrt-12.0.0-r1\\mingw64\\bin\\ar.exe qc CMakeFiles\\cmTC_1221e.dir/objects.a @CMakeFiles\\cmTC_1221e.dir\\objects1.rsp
+        C:\\Users\\katka\\Downloads\\winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.1.8-mingw-w64ucrt-12.0.0-r1\\mingw64\\bin\\gcc.exe -Wl,--whole-archive CMakeFiles\\cmTC_1221e.dir/objects.a -Wl,--no-whole-archive -o cmTC_1221e.exe -Wl,--out-implib,libcmTC_1221e.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\\cmTC_1221e.dir\\linkLibs.rsp
+        mingw32-make[1]: Leaving directory 'C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/CMakeFiles/CMakeScratch/TryCompile-igyvhi'
+        
+      exitCode: 0
+...
