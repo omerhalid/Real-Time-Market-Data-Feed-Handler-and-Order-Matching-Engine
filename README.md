@@ -162,8 +162,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For any inquiries or further information, please contact:
 
-- **Author**: Ömer
-- **Email**: your-email@example.com
+- **Author**: Ömer Halit Cinar
+- **Email**: omerhalidcinar@gmail.com
 
 Feel free to reach out with questions, feedback, or ideas for future improvements!
 
