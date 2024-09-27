@@ -166,7 +166,3 @@ For any inquiries or further information, please contact:
 - **Email**: omerhalidcinar@gmail.com
 
 Feel free to reach out with questions, feedback, or ideas for future improvements!
-
----
-
-This `README.md` provides a detailed overview, from installation and usage to the structure and goals of the project. It also includes instructions on building, running tests, and contributing, which should be helpful for anyone interacting with the project.
