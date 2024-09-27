@@ -1,0 +1,2 @@
+C:\Users\katka\Downloads\winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.1.8-mingw-w64ucrt-12.0.0-r1\mingw64\bin\ar.exe qc libsrc.a CMakeFiles/src.dir/main.cpp.obj
+C:\Users\katka\Downloads\winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.1.8-mingw-w64ucrt-12.0.0-r1\mingw64\bin\ranlib.exe libsrc.a
