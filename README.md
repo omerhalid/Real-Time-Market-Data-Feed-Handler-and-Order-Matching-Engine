@@ -1,7 +1,3 @@
-Here’s a detailed GitHub `README.md` and description for your **Real-Time Market Data Feed Handler and Order Matching Engine** project. This README is designed to provide a comprehensive overview of the project, instructions on how to get started, and insights into the key features and goals.
-
----
-
 # Real-Time Market Data Feed Handler & Order Matching Engine
 
 ## Description
