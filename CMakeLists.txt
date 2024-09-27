@@ -17,9 +17,12 @@ set(CURL_LIBRARY "C:/curl/lib/libcurl.a")  # Use the static library
 # Add source files
 add_subdirectory(src)
 
-# Executable
-add_executable(MarketDataEngine src/main.cpp)
+# Create the server executable
+add_executable(MarketDataEngineServer src/networking/Server_main.cpp)
+target_include_directories(MarketDataEngineServer PRIVATE ${CURL_INCLUDE_DIR})
+target_link_libraries(MarketDataEngineServer PRIVATE ${CURL_LIBRARY})
 
-# Link cURL library
-target_include_directories(MarketDataEngine PRIVATE ${CURL_INCLUDE_DIR})
-target_link_libraries(MarketDataEngine PRIVATE ${CURL_LIBRARY})
+# Create the client executable
+add_executable(MarketDataEngineClient src/networking/Client_main.cpp)
+target_include_directories(MarketDataEngineClient PRIVATE ${CURL_INCLUDE_DIR})
+target_link_libraries(MarketDataEngineClient PRIVATE ${CURL_LIBRARY})

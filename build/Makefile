@@ -116,17 +116,30 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named MarketDataEngine
+# Target rules for targets named MarketDataEngineServer
 
 # Build rule for target.
-MarketDataEngine: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 MarketDataEngine
-.PHONY : MarketDataEngine
+MarketDataEngineServer: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 MarketDataEngineServer
+.PHONY : MarketDataEngineServer
 
 # fast build rule for target.
-MarketDataEngine/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngine.dir\build.make CMakeFiles/MarketDataEngine.dir/build
-.PHONY : MarketDataEngine/fast
+MarketDataEngineServer/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineServer.dir\build.make CMakeFiles/MarketDataEngineServer.dir/build
+.PHONY : MarketDataEngineServer/fast
+
+#=============================================================================
+# Target rules for targets named MarketDataEngineClient
+
+# Build rule for target.
+MarketDataEngineClient: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 MarketDataEngineClient
+.PHONY : MarketDataEngineClient
+
+# fast build rule for target.
+MarketDataEngineClient/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineClient.dir\build.make CMakeFiles/MarketDataEngineClient.dir/build
+.PHONY : MarketDataEngineClient/fast
 
 #=============================================================================
 # Target rules for targets named src
@@ -141,29 +154,53 @@ src/fast:
 	$(MAKE) $(MAKESILENT) -f src\CMakeFiles\src.dir\build.make src/CMakeFiles/src.dir/build
 .PHONY : src/fast
 
-src/main.obj: src/main.cpp.obj
-.PHONY : src/main.obj
+src/networking/Client_main.obj: src/networking/Client_main.cpp.obj
+.PHONY : src/networking/Client_main.obj
 
 # target to build an object file
-src/main.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngine.dir\build.make CMakeFiles/MarketDataEngine.dir/src/main.cpp.obj
-.PHONY : src/main.cpp.obj
+src/networking/Client_main.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineClient.dir\build.make CMakeFiles/MarketDataEngineClient.dir/src/networking/Client_main.cpp.obj
+.PHONY : src/networking/Client_main.cpp.obj
 
-src/main.i: src/main.cpp.i
-.PHONY : src/main.i
+src/networking/Client_main.i: src/networking/Client_main.cpp.i
+.PHONY : src/networking/Client_main.i
 
 # target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngine.dir\build.make CMakeFiles/MarketDataEngine.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
+src/networking/Client_main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineClient.dir\build.make CMakeFiles/MarketDataEngineClient.dir/src/networking/Client_main.cpp.i
+.PHONY : src/networking/Client_main.cpp.i
 
-src/main.s: src/main.cpp.s
-.PHONY : src/main.s
+src/networking/Client_main.s: src/networking/Client_main.cpp.s
+.PHONY : src/networking/Client_main.s
 
 # target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngine.dir\build.make CMakeFiles/MarketDataEngine.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
+src/networking/Client_main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineClient.dir\build.make CMakeFiles/MarketDataEngineClient.dir/src/networking/Client_main.cpp.s
+.PHONY : src/networking/Client_main.cpp.s
+
+src/networking/Server_main.obj: src/networking/Server_main.cpp.obj
+.PHONY : src/networking/Server_main.obj
+
+# target to build an object file
+src/networking/Server_main.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineServer.dir\build.make CMakeFiles/MarketDataEngineServer.dir/src/networking/Server_main.cpp.obj
+.PHONY : src/networking/Server_main.cpp.obj
+
+src/networking/Server_main.i: src/networking/Server_main.cpp.i
+.PHONY : src/networking/Server_main.i
+
+# target to preprocess a source file
+src/networking/Server_main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineServer.dir\build.make CMakeFiles/MarketDataEngineServer.dir/src/networking/Server_main.cpp.i
+.PHONY : src/networking/Server_main.cpp.i
+
+src/networking/Server_main.s: src/networking/Server_main.cpp.s
+.PHONY : src/networking/Server_main.s
+
+# target to generate assembly for a file
+src/networking/Server_main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineServer.dir\build.make CMakeFiles/MarketDataEngineServer.dir/src/networking/Server_main.cpp.s
+.PHONY : src/networking/Server_main.cpp.s
 
 # Help Target
 help:
@@ -173,11 +210,15 @@ help:
 	@echo ... depend
 	@echo ... edit_cache
 	@echo ... rebuild_cache
-	@echo ... MarketDataEngine
+	@echo ... MarketDataEngineClient
+	@echo ... MarketDataEngineServer
 	@echo ... src
-	@echo ... src/main.obj
-	@echo ... src/main.i
-	@echo ... src/main.s
+	@echo ... src/networking/Client_main.obj
+	@echo ... src/networking/Client_main.i
+	@echo ... src/networking/Client_main.s
+	@echo ... src/networking/Server_main.obj
+	@echo ... src/networking/Server_main.i
+	@echo ... src/networking/Server_main.s
 .PHONY : help
 
 

@@ -1,4 +1,4 @@
-#include <iostream>
+#pragma once
 
 template <typename T>
 struct Order
@@ -14,7 +14,7 @@ struct Order
     Order(int id_, bool isBuyOrder_, int quantity_, T price_);
 };
 
-// Default constructor
+// Default constructor definition
 template <typename T>
 Order<T>::Order() : 
     id(0), isBuyOrder(0), quantity(0), price(0) {}

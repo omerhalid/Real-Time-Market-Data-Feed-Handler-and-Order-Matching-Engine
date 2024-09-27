@@ -1,109 +1,72 @@
-#include <iostream>
-#include "Order.cpp" // Change to .hpp
-#include <queue>
-#include <vector>
-#include <functional>
-#include <unordered_map>
+#include "OrderBook.hpp"
 
-// Alias for Order<double>
-using OrderDouble = Order<double>;
-
-// Comparison functor for buy orders (max-heap)
-struct BuyOrderCompare {
-    bool operator()(const OrderDouble& lhs, const OrderDouble& rhs) const {
-        return lhs.price < rhs.price; // Higher price has higher priority
-    } // timestamp can be added here
-};
-
-// Comparison functor for sell orders (min-heap)
-struct SellOrderCompare {
-    bool operator()(const OrderDouble& lhs, const OrderDouble& rhs) const {
-        return lhs.price > rhs.price; // Lower price has higher priority
-    }
-};
-
-class OrderBook
+template<typename Compare>
+void OrderBook::removeFromHeap(std::priority_queue<OrderDouble, std::vector<OrderDouble>, Compare> &heap, int id)
 {
-private:
-    std::priority_queue<OrderDouble, std::vector<OrderDouble>, BuyOrderCompare> buyOrders;
-    std::priority_queue<OrderDouble, std::vector<OrderDouble>, SellOrderCompare> sellOrders;
+    std::vector<OrderDouble> temp;
 
-    std::unordered_map<int, OrderDouble> orderMap;
-
-    template<typename Compare>
-    void removeFromHeap(std::priority_queue<OrderDouble, std::vector<OrderDouble>, Compare> &heap, int id)
-    { // come back here to make it more efficient
-        std::vector<OrderDouble> temp;
-
-        while(!heap.empty())
+    while (!heap.empty())
+    {
+        OrderDouble top = heap.top();
+        heap.pop();
+        if (top.id != id)
         {
-            OrderDouble top = heap.top();
-            
-            heap.pop();
-            
-            if(top.id != id)
-            {
-                temp.emplace_back(top);
-            }
-        }
-
-        for(const auto& order : temp)
-        {
-            heap.push(order);
+            temp.emplace_back(top);
         }
     }
 
-public:
-    void AddOrder(int id_, int quantity_, double price_, bool isBuyOrder_)
+    for (const auto& order : temp)
     {
-        OrderDouble newOrder(id_, quantity_, price_, isBuyOrder_);
-        orderMap[id_] = newOrder;
-        
-        if (isBuyOrder_)
+        heap.push(order);
+    }
+}
+
+void OrderBook::AddOrder(int id_, int quantity_, double price_, bool isBuyOrder_)
+{
+    OrderDouble newOrder(id_, quantity_, price_, isBuyOrder_);
+    orderMap[id_] = newOrder;
+
+    if (isBuyOrder_)
+    {
+        buyOrders.push(newOrder);
+    }
+    else
+    {
+        sellOrders.push(newOrder);
+    }
+}
+
+void OrderBook::CancelOrder(int id)
+{
+    if (orderMap.find(id) != orderMap.end())
+    {
+        OrderDouble cancelOrder = std::move(orderMap[id]);
+        orderMap.erase(id);
+        if (cancelOrder.isBuyOrder)
         {
-            buyOrders.push(newOrder);
+            removeFromHeap(buyOrders, id);
         }
         else
         {
-            sellOrders.push(newOrder);
+            removeFromHeap(sellOrders, id);
         }
     }
+}
 
-    void CancelOrder(int id)
+void OrderBook::modifyOrder(const int& id, const double& newPrice, const int& newQuantity)
+{
+    if (orderMap.find(id) != orderMap.end())
     {
-        if(orderMap.find(id) != orderMap.end())
+        Order oldOrder = orderMap[id];
+        orderMap.erase(id);
+        if (oldOrder.isBuyOrder)
         {
-            OrderDouble cancelOrder = std::move(orderMap[id]);
-            orderMap.erase(id);
-            if (cancelOrder.isBuyOrder)
-            {
-                removeFromHeap(buyOrders, id);
-            }
-            else
-            {
-                removeFromHeap(sellOrders, id);
-            }
+            removeFromHeap(buyOrders, id);
         }
-    }
-
-    void modifyOrder(const int& id, const double& newPrice, const int& newQuantity)
-    {
-        if(orderMap.find(id) != orderMap.end())
+        else
         {
-            Order oldOrder = orderMap[id];
-            orderMap.erase(id);
-            if (oldOrder.isBuyOrder)
-            {
-                removeFromHeap(buyOrders, id);
-            }
-            else
-            {
-                removeFromHeap(sellOrders, id);
-            }
-            AddOrder(id, newQuantity, newPrice, oldOrder.isBuyOrder);
+            removeFromHeap(sellOrders, id);
         }
+        AddOrder(id, newQuantity, newPrice, oldOrder.isBuyOrder);
     }
-
-    auto getBuyOrders() {return buyOrders;}
-    auto getSellOrders() {return sellOrders;}
-};
+}

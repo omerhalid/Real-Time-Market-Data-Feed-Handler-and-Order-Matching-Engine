@@ -1,4 +1,5 @@
-C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/CMakeFiles/MarketDataEngine.dir
+C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/CMakeFiles/MarketDataEngineServer.dir
+C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/CMakeFiles/MarketDataEngineClient.dir
 C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/CMakeFiles/edit_cache.dir
 C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/CMakeFiles/rebuild_cache.dir
 C:/Users/katka/source/market_data_handler/Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine/build/src/CMakeFiles/src.dir

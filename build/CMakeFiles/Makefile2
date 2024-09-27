@@ -62,7 +62,8 @@ CMAKE_BINARY_DIR = C:\Users\katka\source\market_data_handler\Real-Time-Market-Da
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/MarketDataEngine.dir/all
+all: CMakeFiles/MarketDataEngineServer.dir/all
+all: CMakeFiles/MarketDataEngineClient.dir/all
 all: src/all
 .PHONY : all
 
@@ -71,7 +72,8 @@ preinstall: src/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/MarketDataEngine.dir/clean
+clean: CMakeFiles/MarketDataEngineServer.dir/clean
+clean: CMakeFiles/MarketDataEngineClient.dir/clean
 clean: src/clean
 .PHONY : clean
 
@@ -91,30 +93,56 @@ src/clean: src/CMakeFiles/src.dir/clean
 .PHONY : src/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/MarketDataEngine.dir
+# Target rules for target CMakeFiles/MarketDataEngineServer.dir
 
 # All Build rule for target.
-CMakeFiles/MarketDataEngine.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngine.dir\build.make CMakeFiles/MarketDataEngine.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngine.dir\build.make CMakeFiles/MarketDataEngine.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\katka\source\market_data_handler\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\build\CMakeFiles --progress-num=1,2 "Built target MarketDataEngine"
-.PHONY : CMakeFiles/MarketDataEngine.dir/all
+CMakeFiles/MarketDataEngineServer.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineServer.dir\build.make CMakeFiles/MarketDataEngineServer.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineServer.dir\build.make CMakeFiles/MarketDataEngineServer.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\katka\source\market_data_handler\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\build\CMakeFiles --progress-num=3,4 "Built target MarketDataEngineServer"
+.PHONY : CMakeFiles/MarketDataEngineServer.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/MarketDataEngine.dir/rule: cmake_check_build_system
+CMakeFiles/MarketDataEngineServer.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\katka\source\market_data_handler\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\build\CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/MarketDataEngine.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/MarketDataEngineServer.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\katka\source\market_data_handler\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\build\CMakeFiles 0
-.PHONY : CMakeFiles/MarketDataEngine.dir/rule
+.PHONY : CMakeFiles/MarketDataEngineServer.dir/rule
 
 # Convenience name for target.
-MarketDataEngine: CMakeFiles/MarketDataEngine.dir/rule
-.PHONY : MarketDataEngine
+MarketDataEngineServer: CMakeFiles/MarketDataEngineServer.dir/rule
+.PHONY : MarketDataEngineServer
 
 # clean rule for target.
-CMakeFiles/MarketDataEngine.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngine.dir\build.make CMakeFiles/MarketDataEngine.dir/clean
-.PHONY : CMakeFiles/MarketDataEngine.dir/clean
+CMakeFiles/MarketDataEngineServer.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineServer.dir\build.make CMakeFiles/MarketDataEngineServer.dir/clean
+.PHONY : CMakeFiles/MarketDataEngineServer.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/MarketDataEngineClient.dir
+
+# All Build rule for target.
+CMakeFiles/MarketDataEngineClient.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineClient.dir\build.make CMakeFiles/MarketDataEngineClient.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineClient.dir\build.make CMakeFiles/MarketDataEngineClient.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\katka\source\market_data_handler\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\build\CMakeFiles --progress-num=1,2 "Built target MarketDataEngineClient"
+.PHONY : CMakeFiles/MarketDataEngineClient.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/MarketDataEngineClient.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\katka\source\market_data_handler\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\build\CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/MarketDataEngineClient.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\katka\source\market_data_handler\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\build\CMakeFiles 0
+.PHONY : CMakeFiles/MarketDataEngineClient.dir/rule
+
+# Convenience name for target.
+MarketDataEngineClient: CMakeFiles/MarketDataEngineClient.dir/rule
+.PHONY : MarketDataEngineClient
+
+# clean rule for target.
+CMakeFiles/MarketDataEngineClient.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MarketDataEngineClient.dir\build.make CMakeFiles/MarketDataEngineClient.dir/clean
+.PHONY : CMakeFiles/MarketDataEngineClient.dir/clean
 
 #=============================================================================
 # Target rules for target src/CMakeFiles/src.dir
@@ -123,7 +151,7 @@ CMakeFiles/MarketDataEngine.dir/clean:
 src/CMakeFiles/src.dir/all:
 	$(MAKE) $(MAKESILENT) -f src\CMakeFiles\src.dir\build.make src/CMakeFiles/src.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\CMakeFiles\src.dir\build.make src/CMakeFiles/src.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\katka\source\market_data_handler\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\build\CMakeFiles --progress-num=3,4 "Built target src"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\katka\source\market_data_handler\Real-Time-Market-Data-Feed-Handler-and-Order-Matching-Engine\build\CMakeFiles --progress-num=5,6 "Built target src"
 .PHONY : src/CMakeFiles/src.dir/all
 
 # Build rule for subdir invocation for target.
