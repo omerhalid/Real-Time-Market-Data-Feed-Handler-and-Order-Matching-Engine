@@ -9,7 +9,8 @@ void Client::loadEnv() {
     }
 
     std::string line;
-    while (std::getline(envFile, line)) {
+    while (std::getline(envFile, line)) 
+    {
         std::istringstream is_line(line);
         std::string key;
         if (std::getline(is_line, key, '=')) {
