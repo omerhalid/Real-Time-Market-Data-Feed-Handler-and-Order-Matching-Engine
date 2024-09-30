@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\MarketDataEngineServer.dir/objects.a
-C:\Users\katka\Downloads\winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.1.8-mingw-w64ucrt-12.0.0-r1\mingw64\bin\ar.exe qc CMakeFiles\MarketDataEngineServer.dir/objects.a @CMakeFiles\MarketDataEngineServer.dir\objects1.rsp
-C:\Users\katka\Downloads\winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.1.8-mingw-w64ucrt-12.0.0-r1\mingw64\bin\c++.exe -Wl,--whole-archive CMakeFiles\MarketDataEngineServer.dir/objects.a -Wl,--no-whole-archive -o MarketDataEngineServer.exe -Wl,--out-implib,libMarketDataEngineServer.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\MarketDataEngineServer.dir\linkLibs.rsp
