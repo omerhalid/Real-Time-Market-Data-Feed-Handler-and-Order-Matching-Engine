@@ -10,8 +10,6 @@ The system is designed with the following goals in mind:
 - Ensure modularity and scalability, allowing the system to be extended with new features, such as different order types and market instruments.
 - Provide performance benchmarks and unit tests to ensure correctness and efficiency.
 
-This project simulates a real-world trading environment and is ideal for developers looking to gain practical experience in financial systems, networking, and high-performance C++ development.
-
 ---
 
 ## Features
