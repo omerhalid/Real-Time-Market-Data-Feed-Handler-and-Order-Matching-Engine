@@ -1,45 +1,112 @@
-cmake_minimum_required(VERSION 3.10)
-project(MarketDataEngine)
+cmake_minimum_required(VERSION 3.15)
+project(MarketDataEngine VERSION 1.0.0 LANGUAGES CXX)
 
 # Set C++ Standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Include directories
 include_directories(include)
-include_directories("${CMAKE_SOURCE_DIR}/../json")  # Include json.hpp
-include_directories("C:/Users/katka/source/market_data_handler/boost_1_86_0")  # Include Boost headers
 
-# Use the cURL installation in C:/curl
-set(CURL_INCLUDE_DIR "C:/curl/include")
-set(CURL_LIBRARY "C:/curl/lib/libcurl.a")  # Use the static library
-
-# Find Boost libraries
-set(BOOST_ROOT "C:/Users/katka/source/market_data_handler/boost_1_86_0")
-set(BOOST_INCLUDEDIR "${BOOST_ROOT}")
-set(BOOST_LIBRARYDIR "${BOOST_ROOT}/stage/lib")
-
-find_package(Boost 1.86 REQUIRED COMPONENTS system thread)
-
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    link_directories(${Boost_LIBRARY_DIRS})
+# Linux-specific HFT optimizations
+if(UNIX AND NOT APPLE)
+    set(CMAKE_SYSTEM_NAME Linux)
+    
+    # Aggressive compiler optimizations for HFT
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -mtune=native -flto -ffast-math -funroll-loops")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-exceptions -fno-rtti")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -Wpedantic")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wno-unused-parameter")
+    
+    # Link-time optimization
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+    
+    # Use huge pages (2MB pages)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,common-page-size=2097152")
+    
+    # Prefer static linking for performance
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
+    
+    # Profile-guided optimization flags (uncomment after building with -fprofile-generate)
+    # set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fprofile-use -fprofile-correction")
+    
+    message(STATUS "Building with HFT optimizations for Linux")
 else()
-    message(FATAL_ERROR "Could not find Boost libraries")
+    message(WARNING "HFT optimizations are Linux-specific. Building with standard optimizations.")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
 endif()
 
-# Manually specify the Boost libraries (for MinGW)
-set(BOOST_LIBS
-    "${BOOST_LIBRARYDIR}/libboost_system-mgw14-mt.a"
-    "${BOOST_LIBRARYDIR}/libboost_thread-mgw14-mt.a"
+# Find required packages
+find_package(Threads REQUIRED)
+
+# Optional: Find Boost (for networking if needed)
+find_package(Boost QUIET COMPONENTS system thread)
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+    message(STATUS "Boost found: ${Boost_VERSION}")
+else()
+    message(STATUS "Boost not found - some networking features may be unavailable")
+endif()
+
+# Optional: Find libcurl (for HTTP client if needed)
+find_package(CURL QUIET)
+if(CURL_FOUND)
+    include_directories(${CURL_INCLUDE_DIRS})
+    message(STATUS "libcurl found")
+else()
+    message(STATUS "libcurl not found - HTTP client features unavailable")
+endif()
+
+# Source files
+set(ORDER_MATCHING_SOURCES
+    src/order_matching/OrderBook.cpp
+    src/order_matching/Matcher.cpp
 )
 
-# Create the server executable
-add_executable(MarketDataEngineServer src/networking/Server_main.cpp src/networking/Server.cpp src/order_matching/OrderBook.cpp src/order_matching/Matcher.cpp)
-target_include_directories(MarketDataEngineServer PRIVATE ${CURL_INCLUDE_DIR})
-target_link_libraries(MarketDataEngineServer PRIVATE ${CURL_LIBRARY} ${BOOST_LIBS} ws2_32)
+# Create main executable
+add_executable(MarketDataEngine src/main.cpp ${ORDER_MATCHING_SOURCES})
 
-# Create the client executable
-add_executable(MarketDataEngineClient src/networking/Client_main.cpp src/networking/Client.cpp)
-target_include_directories(MarketDataEngineClient PRIVATE ${CURL_INCLUDE_DIR})
-target_link_libraries(MarketDataEngineClient PRIVATE ${CURL_LIBRARY} ${BOOST_LIBS} ws2_32)
+# Link libraries
+target_link_libraries(MarketDataEngine PRIVATE Threads::Threads)
+
+if(Boost_FOUND)
+    target_link_libraries(MarketDataEngine PRIVATE ${Boost_LIBRARIES})
+endif()
+
+if(CURL_FOUND)
+    target_link_libraries(MarketDataEngine PRIVATE ${CURL_LIBRARIES})
+endif()
+
+# Linux-specific libraries
+if(UNIX AND NOT APPLE)
+    target_link_libraries(MarketDataEngine PRIVATE rt)  # For clock_gettime
+endif()
+
+# Compiler-specific options
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(MarketDataEngine PRIVATE
+        $<$<CONFIG:Release>:
+            -O3
+            -march=native
+            -mtune=native
+            -flto
+            -ffast-math
+            -funroll-loops
+            -fno-exceptions
+            -fno-rtti
+            -finline-functions
+            -fomit-frame-pointer
+        >
+    )
+endif()
+
+# Set output directory
+set_target_properties(MarketDataEngine PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+
+# Installation
+install(TARGETS MarketDataEngine
+    RUNTIME DESTINATION bin
+)

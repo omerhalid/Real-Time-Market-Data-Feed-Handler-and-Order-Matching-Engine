@@ -2,24 +2,46 @@
 
 ## Description
 
-This project implements a **real-time market data feed handler** and an **order matching engine**, designed to mimic the core functionality of a financial trading system. It is built in **modern C++** (C++20) and uses external libraries like **libcurl** for network communication and **JSON for Modern C++** (`json.hpp`) for handling market data in JSON format.
+This project implements a **real-time market data feed handler** and an **order matching engine**, optimized for **High-Frequency Trading (HFT)** with microsecond-level latency targets. It is built in **modern C++** (C++20) following HFT industry best practices.
 
 The system is designed with the following goals in mind:
-- Efficiently process real-time market data from external APIs.
-- Provide a robust order matching engine that can handle high-frequency trading (HFT) scenarios.
-- Ensure modularity and scalability, allowing the system to be extended with new features, such as different order types and market instruments.
-- Provide performance benchmarks and unit tests to ensure correctness and efficiency.
+- **Ultra-low latency**: Microsecond-level order processing (< 1μs for P99 operations)
+- **Linux-optimized**: Designed specifically for Linux production environments
+- **Cache-efficient**: Data structures optimized for CPU cache locality
+- **Zero-allocation hot paths**: Memory pools prevent dynamic allocations during trading
+- **Real-time performance**: CPU affinity, memory locking, and real-time scheduling
+
+**⚠️ Note**: This codebase is optimized for Linux and may not compile on macOS/Windows. It uses Linux-specific APIs and system calls.
 
 ---
 
 ## Features
 
-- **Order Matching Engine**: Supports different order types (limit, market, etc.) and matches buy/sell orders based on price and time priority.
-- **Real-Time Market Data Handling**: Fetches and processes real-time market data streams using `libcurl` and `json.hpp`.
-- **Networking**: Implements client-server communication for interacting with market data feeds and potentially other external systems.
-- **High-Performance**: Designed for performance with an emphasis on low-latency order matching and data processing.
-- **Unit Testing**: Includes comprehensive unit tests to validate core functionality.
-- **Benchmarking**: Performance benchmarks for key system components such as the order matching engine and market data handler.
+### HFT-Optimized Core
+- **Fixed-Point Prices**: 64-bit integer prices (micro-dollar precision) for deterministic arithmetic
+- **Price Ladder**: Efficient O(log n) insertion, O(1) best price lookup using sorted maps
+- **Cache-Aligned Orders**: 32-byte aligned Order structures (one cache line)
+- **Memory Pool**: Pre-allocated order pool eliminates dynamic allocations in hot paths
+- **Nanosecond Timestamps**: High-resolution timestamps for price-time priority matching
+
+### Linux Optimizations
+- **CPU Affinity**: Pin process to specific CPU cores
+- **Memory Locking**: `mlockall()` prevents swapping to disk
+- **Real-Time Scheduling**: SCHED_FIFO priority for deterministic latency
+- **Huge Pages**: 2MB pages to reduce TLB misses
+- **Epoll Server**: High-performance event-driven networking
+
+### Performance
+- **Latency Measurement**: Built-in microsecond-precision latency tracking
+- **Benchmarking Tools**: Statistical analysis (P50, P90, P95, P99, P99.9)
+- **Compiler Optimizations**: Aggressive flags (-O3, -march=native, LTO, etc.)
+
+### Inter-Thread Communication
+- **Lock-Free SPSC Queue**: Single Producer Single Consumer queue for zero-latency inter-thread messaging
+- **Async Logger**: Non-blocking logging using SPSC queue and background thread
+- **Thread-Safe**: Designed for high-throughput producer-consumer patterns
+
+For detailed optimization documentation, see [HFT_OPTIMIZATIONS.md](HFT_OPTIMIZATIONS.md).
 
 ---
 
@@ -59,10 +81,13 @@ The system is designed with the following goals in mind:
 
 ### Prerequisites
 
-- **CMake** (version 3.10 or higher)
-- **C++20** compatible compiler (e.g., GCC, Clang, MSVC)
-- **libcurl** (for handling HTTP requests)
-- **JSON for Modern C++** (`json.hpp`)
+- **Linux** (Ubuntu 20.04+, RHEL 8+, or similar)
+- **CMake** (version 3.15 or higher)
+- **GCC 10+** or **Clang 12+** with C++20 support
+- **Optional**: Boost (for networking features)
+- **Optional**: libcurl (for HTTP client features)
+
+**Note**: This project is optimized for Linux and uses Linux-specific APIs. It will not compile on macOS/Windows without modifications.
 
 ### Building the Project
 
@@ -73,28 +98,42 @@ The system is designed with the following goals in mind:
    cd market-data-order-matching-engine
    ```
 
-2. Create a build directory:
+2. Configure Linux system (recommended for production):
+
+   ```bash
+   # Enable huge pages
+   sudo sh -c 'echo 1024 > /proc/sys/vm/nr_hugepages'
+   
+   # Set CPU governor to performance
+   sudo cpupower frequency-set -g performance
+   ```
+
+3. Create a build directory:
 
    ```bash
    mkdir build && cd build
    ```
 
-3. Run CMake to configure the project:
+4. Configure with CMake (Release mode for optimizations):
 
    ```bash
-   cmake ..
+   cmake -DCMAKE_BUILD_TYPE=Release ..
    ```
 
-4. Build the project:
+5. Build the project:
 
    ```bash
-   make
+   make -j$(nproc)
    ```
 
-5. Run the executable:
+6. Run the executable:
 
    ```bash
-   ./MarketDataEngine
+   # For full optimizations (requires root):
+   sudo ./bin/MarketDataEngine
+   
+   # Or without root (some optimizations disabled):
+   ./bin/MarketDataEngine
    ```
 
 ### Running Unit Tests
