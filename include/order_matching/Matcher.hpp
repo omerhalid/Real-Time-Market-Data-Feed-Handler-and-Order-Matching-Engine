@@ -29,16 +29,16 @@ public:
     [[nodiscard]] size_t matchOrders(OrderBook& orderBook) noexcept {
         size_t trade_count = 0;
         
-        while (orderBook.hasMatch()) {
+        while (orderBook.hasMatch()) [[likely]] {
             Order* best_bid = orderBook.getBestBid();
             Order* best_ask = orderBook.getBestAsk();
             
-            if (!best_bid || !best_ask) {
+            if (!best_bid || !best_ask) [[unlikely]] {
                 break;
             }
             
             // Check if prices match
-            if (best_bid->price_scaled < best_ask->price_scaled) {
+            if (best_bid->price_scaled < best_ask->price_scaled) [[unlikely]] {
                 break; // No match possible
             }
             
@@ -85,11 +85,11 @@ private:
         bid->quantity -= qty;
         ask->quantity -= qty;
         
-        // Remove fully filled orders
-        if (bid->quantity == 0) {
+        // Remove fully filled orders (partial fills are more common)
+        if (bid->quantity == 0) [[unlikely]] {
             orderBook.cancelOrder(bid->id);
         }
-        if (ask->quantity == 0) {
+        if (ask->quantity == 0) [[unlikely]] {
             orderBook.cancelOrder(ask->id);
         }
         

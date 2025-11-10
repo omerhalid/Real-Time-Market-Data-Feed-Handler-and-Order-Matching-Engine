@@ -91,8 +91,8 @@ public:
             ssize_t n = recvfrom(socket_fd_, buffer, sizeof(buffer), MSG_DONTWAIT,
                                  (struct sockaddr*)&from_addr, &from_len);
             
-            if (n < 0) {
-                if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            if (n < 0) [[unlikely]] {
+                if (errno == EAGAIN || errno == EWOULDBLOCK) [[likely]] {
                     break; // No more data
                 }
                 // Error - continue to next message
@@ -112,7 +112,7 @@ public:
         while (true) {
             int received = receiveMessages();
             
-            if (busy_poll_ && received == 0) {
+            if (busy_poll_ && received == 0) [[unlikely]] {
                 // Busy poll: use poll() with 0 timeout for immediate return
                 struct pollfd pfd;
                 pfd.fd = socket_fd_;
@@ -124,7 +124,7 @@ public:
                 // Small CPU pause to avoid 100% CPU usage
                 // In production, might want to use _mm_pause() or similar
                 __asm__ __volatile__("pause");
-            } else if (received == 0) {
+            } else if (received == 0) [[unlikely]] {
                 // No busy polling: sleep briefly to avoid 100% CPU
                 usleep(1); // 1 microsecond
             }

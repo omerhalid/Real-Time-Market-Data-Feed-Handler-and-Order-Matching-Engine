@@ -112,18 +112,18 @@ public:
     
     // Log methods (non-blocking, lock-free)
     void log(LogLevel level, const char* message) noexcept {
-        if (level < min_level_.load(std::memory_order_acquire)) {
+        if (level < min_level_.load(std::memory_order_acquire)) [[unlikely]] {
             return; // Below minimum level
         }
         
-        if (!running_.load(std::memory_order_acquire)) {
+        if (!running_.load(std::memory_order_acquire)) [[unlikely]] {
             return; // Logger not started
         }
         
         LogMessage msg(level, message);
         
         // Try to push, drop if queue is full (non-blocking)
-        if (!queue_.push(msg)) {
+        if (!queue_.push(msg)) [[unlikely]] {
             // Queue full - could increment drop counter here
             // In production, might want to use a larger queue or handle differently
         }
@@ -140,7 +140,7 @@ public:
     // Format and log (non-blocking)
     template<typename... Args>
     void logf(LogLevel level, const char* format, Args... args) noexcept {
-        if (level < min_level_.load(std::memory_order_acquire)) {
+        if (level < min_level_.load(std::memory_order_acquire)) [[unlikely]] {
             return;
         }
         
@@ -177,14 +177,14 @@ private:
         
         while (running_.load(std::memory_order_acquire) || !queue_.empty()) {
             // Try to pop a message
-            if (queue_.pop(msg)) {
+            if (queue_.pop(msg)) [[likely]] {
                 writeLogMessage(msg);
                 last_flush = hft::getMonotonicNs();
             } else {
                 // Queue empty, check if we should flush
                 int64_t now = hft::getMonotonicNs();
-                if (now - last_flush > flush_interval_ns) {
-                    if (log_file_) {
+                if (now - last_flush > flush_interval_ns) [[unlikely]] {
+                    if (log_file_) [[likely]] {
                         log_file_->flush();
                     }
                     last_flush = now;

@@ -38,7 +38,7 @@ public:
     // Allocate an order from the pool (lock-free)
     [[nodiscard]] inline Order* allocate() noexcept {
         size_t idx = next_free_.fetch_add(1, std::memory_order_relaxed);
-        if (idx < PoolSize) {
+        if (idx < PoolSize) [[likely]] {
             Order* order = &pool_[idx];
             // Zero-initialize
             std::memset(order, 0, sizeof(Order));
@@ -52,10 +52,10 @@ public:
     inline void deallocate(Order* order) noexcept {
         // In a real HFT system, you might want to recycle orders
         // For simplicity, we just mark as available
-        if (order >= pool_.data() && order < pool_.data() + PoolSize) {
+        if (order >= pool_.data() && order < pool_.data() + PoolSize) [[likely]] {
             // Order is from pool, can be reused
             std::memset(order, 0, sizeof(Order));
-        } else {
+        } else [[unlikely]] {
             // Order was allocated from heap
             delete order;
         }

@@ -34,7 +34,7 @@ public:
         const size_t next_write = (current_write + 1) & (Size - 1);
         
         // Check if queue is full
-        if (next_write == read_pos_.load(std::memory_order_acquire)) {
+        if (next_write == read_pos_.load(std::memory_order_acquire)) [[unlikely]] {
             return false; // Queue full
         }
         
@@ -53,7 +53,7 @@ public:
         const size_t current_read = read_pos_.load(std::memory_order_relaxed);
         
         // Check if queue is empty
-        if (current_read == write_pos_.load(std::memory_order_acquire)) {
+        if (current_read == write_pos_.load(std::memory_order_acquire)) [[unlikely]] {
             return false; // Queue empty
         }
         
@@ -84,7 +84,7 @@ public:
     [[nodiscard]] inline size_t size() const noexcept {
         const size_t write = write_pos_.load(std::memory_order_acquire);
         const size_t read = read_pos_.load(std::memory_order_acquire);
-        if (write >= read) {
+        if (write >= read) [[likely]] {
             return write - read;
         }
         return Size - read + write;
@@ -115,7 +115,7 @@ public:
         const size_t current_write = write_pos_.load(std::memory_order_relaxed);
         const size_t next_write = (current_write + 1) & (Size - 1);
         
-        if (next_write == read_pos_.load(std::memory_order_acquire)) {
+        if (next_write == read_pos_.load(std::memory_order_acquire)) [[unlikely]] {
             return false;
         }
         
@@ -127,7 +127,7 @@ public:
     [[nodiscard]] inline bool pop(T*& item) noexcept {
         const size_t current_read = read_pos_.load(std::memory_order_relaxed);
         
-        if (current_read == write_pos_.load(std::memory_order_acquire)) {
+        if (current_read == write_pos_.load(std::memory_order_acquire)) [[unlikely]] {
             return false;
         }
         

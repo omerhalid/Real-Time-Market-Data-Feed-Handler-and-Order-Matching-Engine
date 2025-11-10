@@ -25,7 +25,7 @@ public:
     // Remove order by ID
     bool removeOrder(OrderId id) noexcept {
         for (auto it = orders_.begin(); it != orders_.end(); ++it) {
-            if ((*it)->id == id) {
+            if ((*it)->id == id) [[likely]] {
                 total_quantity_ -= (*it)->quantity;
                 orders_.erase(it);
                 order_count_--;
@@ -37,7 +37,10 @@ public:
     
     // Get best order (FIFO - first in queue)
     [[nodiscard]] Order* getBestOrder() const noexcept {
-        return orders_.empty() ? nullptr : orders_.front();
+        if (orders_.empty()) [[unlikely]] {
+            return nullptr;
+        }
+        return orders_.front();
     }
     
     // Get total quantity at this level
@@ -71,20 +74,19 @@ public:
     static constexpr size_t MAX_PRICE_LEVELS = (MAX_PRICE - MIN_PRICE) / TICK_SIZE;
     
     OrderBook() noexcept {
-        // Pre-allocate price levels (sparse, but fast lookup)
-        buy_levels_.reserve(1024);
-        sell_levels_.reserve(1024);
+        // Maps don't support reserve(), but we can hint the allocator
+        // The map will grow as needed
     }
     
     // Add order to the book
     // Returns true if order was added, false if invalid
     [[nodiscard]] bool addOrder(Order* order) noexcept {
-        if (!order || order->quantity == 0) {
+        if (!order || order->quantity == 0) [[unlikely]] {
             return false;
         }
         
         // Set timestamp if not already set
-        if (order->timestamp_ns == 0) {
+        if (order->timestamp_ns == 0) [[unlikely]] {
             order->timestamp_ns = hft::getTimestampNs();
         }
         
@@ -93,7 +95,7 @@ public:
         
         // Add to appropriate price ladder
         Price price = order->price_scaled;
-        if (order->isBuy()) {
+        if (order->isBuy()) [[likely]] {
             auto& level = buy_levels_[price];
             level.addOrder(order);
             updateBestBid();
@@ -109,7 +111,7 @@ public:
     // Cancel order by ID
     [[nodiscard]] bool cancelOrder(OrderId id) noexcept {
         auto it = order_map_.find(id);
-        if (it == order_map_.end()) {
+        if (it == order_map_.end()) [[unlikely]] {
             return false;
         }
         
@@ -117,27 +119,27 @@ public:
         Price price = order->price_scaled;
         
         bool removed = false;
-        if (order->isBuy()) {
+        if (order->isBuy()) [[likely]] {
             auto level_it = buy_levels_.find(price);
-            if (level_it != buy_levels_.end()) {
+            if (level_it != buy_levels_.end()) [[likely]] {
                 removed = level_it->second.removeOrder(id);
-                if (level_it->second.isEmpty()) {
+                if (level_it->second.isEmpty()) [[unlikely]] {
                     buy_levels_.erase(level_it);
                 }
                 updateBestBid();
             }
         } else {
             auto level_it = sell_levels_.find(price);
-            if (level_it != sell_levels_.end()) {
+            if (level_it != sell_levels_.end()) [[likely]] {
                 removed = level_it->second.removeOrder(id);
-                if (level_it->second.isEmpty()) {
+                if (level_it->second.isEmpty()) [[unlikely]] {
                     sell_levels_.erase(level_it);
                 }
                 updateBestAsk();
             }
         }
         
-        if (removed) {
+        if (removed) [[likely]] {
             order_map_.erase(it);
         }
         
@@ -147,7 +149,7 @@ public:
     // Modify order (cancel + add)
     [[nodiscard]] bool modifyOrder(OrderId id, Price new_price, Quantity new_quantity) noexcept {
         auto it = order_map_.find(id);
-        if (it == order_map_.end()) {
+        if (it == order_map_.end()) [[unlikely]] {
             return false;
         }
         
@@ -168,7 +170,7 @@ public:
     
     // Get best bid (highest buy price)
     [[nodiscard]] Order* getBestBid() const noexcept {
-        if (buy_levels_.empty()) {
+        if (buy_levels_.empty()) [[unlikely]] {
             return nullptr;
         }
         return buy_levels_.rbegin()->second.getBestOrder();
@@ -176,7 +178,7 @@ public:
     
     // Get best ask (lowest sell price)
     [[nodiscard]] Order* getBestAsk() const noexcept {
-        if (sell_levels_.empty()) {
+        if (sell_levels_.empty()) [[unlikely]] {
             return nullptr;
         }
         return sell_levels_.begin()->second.getBestOrder();
@@ -194,7 +196,7 @@ public:
     
     // Get spread (ask - bid)
     [[nodiscard]] Price getSpread() const noexcept {
-        if (best_bid_price_ == 0 || best_ask_price_ == 0) {
+        if (best_bid_price_ == 0 || best_ask_price_ == 0) [[unlikely]] {
             return 0;
         }
         return best_ask_price_ - best_bid_price_;
@@ -209,7 +211,10 @@ public:
     // Get order by ID
     [[nodiscard]] Order* getOrder(OrderId id) const noexcept {
         auto it = order_map_.find(id);
-        return it != order_map_.end() ? it->second : nullptr;
+        if (it != order_map_.end()) [[likely]] {
+            return it->second;
+        }
+        return nullptr;
     }
 
 private:
@@ -227,7 +232,7 @@ private:
     
     // Update cached best bid
     void updateBestBid() noexcept {
-        if (buy_levels_.empty()) {
+        if (buy_levels_.empty()) [[unlikely]] {
             best_bid_price_ = 0;
             return;
         }
@@ -237,7 +242,7 @@ private:
     
     // Update cached best ask
     void updateBestAsk() noexcept {
-        if (sell_levels_.empty()) {
+        if (sell_levels_.empty()) [[unlikely]] {
             best_ask_price_ = 0;
             return;
         }
