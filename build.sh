@@ -12,18 +12,18 @@ echo ""
 
 # Check if running on Linux
 if [[ "$OSTYPE" != "linux-gnu"* ]]; then
-    echo "⚠️  WARNING: This project is optimized for Linux."
-    echo "   Building on non-Linux systems may fail or produce suboptimal results."
+    echo " WARNING: This project is optimized for Linux."
+    echo " Building on non-Linux systems may fail or produce suboptimal results."
     echo ""
 fi
 
 # Create build directory
-echo "📁 Creating build directory..."
+echo " Creating build directory..."
 mkdir -p build
 cd build
 
 # Configure CMake
-echo "⚙️  Configuring CMake (Release mode)..."
+echo "  Configuring CMake (Release mode)..."
 cmake -DCMAKE_BUILD_TYPE=Release ..
 
 # Build
@@ -31,7 +31,7 @@ echo "🔨 Building project..."
 make -j$(nproc)
 
 echo ""
-echo "✅ Build complete!"
+echo " Build complete!"
 echo ""
 echo "To run:"
 echo "  sudo ./bin/MarketDataEngine    # With full optimizations (requires root)"

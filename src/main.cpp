@@ -20,6 +20,9 @@ void demonstrateSPSCQueue();
 
 // Example usage of the HFT-optimized order matching engine
 int main(int argc, char* argv[]) {
+    // Calibrate RDTSC for accurate cycle-to-nanosecond conversion
+    hft::RDTSCCalibrator::calibrate();
+    
     // Initialize async logger first
     hft::getLogger().setLevel(hft::LogLevel::INFO);
     hft::getLogger().start("market_engine.log");  // Log to file
@@ -75,13 +78,15 @@ int main(int argc, char* argv[]) {
                orderBook.getBestAsk() ? orderBook.getBestAsk()->quantity : 0);
     LOG_INFO_F("  Spread: $%.2f", orderBook.getSpread() / 1e6);
     
-    // Match orders
+    // Match orders - using RDTSC for ultra-fast latency measurement
     LOG_INFO("Matching orders...");
-    hft::LatencyTimer timer;
+    hft::LatencyTimerRDTSC timer_rdtsc;  // Ultra-fast RDTSC-based timer
     size_t trades = matcher.matchOrders(orderBook);
-    int64_t latency_us = timer.elapsedUs();
+    int64_t latency_us = timer_rdtsc.elapsedUs();
+    uint64_t latency_cycles = timer_rdtsc.elapsedCycles();
     
-    LOG_INFO_F("  Executed %zu trade(s) in %ld microseconds", trades, latency_us);
+    LOG_INFO_F("  Executed %zu trade(s) in %ld microseconds (%llu cycles)", 
+               trades, latency_us, latency_cycles);
     
     if (trades > 0) {
         const Trade& last_trade = matcher.getLastTrade();

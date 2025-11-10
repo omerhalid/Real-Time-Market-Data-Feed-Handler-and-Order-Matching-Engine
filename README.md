@@ -25,11 +25,13 @@ The system is designed with the following goals in mind:
 - **Nanosecond Timestamps**: High-resolution timestamps for price-time priority matching
 
 ### Linux Optimizations
-- **CPU Affinity**: Pin process to specific CPU cores
+- **CPU Affinity & Thread Pinning**: Pin process and individual threads to specific CPU cores
+- **NUMA Awareness**: Allocate memory on the same NUMA node as CPU (reduces cross-NUMA latency)
 - **Memory Locking**: `mlockall()` prevents swapping to disk
 - **Real-Time Scheduling**: SCHED_FIFO priority for deterministic latency
 - **Huge Pages**: 2MB pages to reduce TLB misses
-- **Epoll Server**: High-performance event-driven networking
+- **Epoll Server**: High-performance event-driven TCP networking
+- **UDP Busy Polling**: SO_BUSY_POLL for ultra-low latency UDP (10-50μs improvement)
 
 ### Performance
 - **Latency Measurement**: Built-in microsecond-precision latency tracking

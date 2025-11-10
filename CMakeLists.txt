@@ -81,6 +81,16 @@ endif()
 # Linux-specific libraries
 if(UNIX AND NOT APPLE)
     target_link_libraries(MarketDataEngine PRIVATE rt)  # For clock_gettime
+    
+    # Optional: NUMA library (if available)
+    find_library(NUMA_LIBRARY numa)
+    if(NUMA_LIBRARY)
+        target_link_libraries(MarketDataEngine PRIVATE ${NUMA_LIBRARY})
+        target_compile_definitions(MarketDataEngine PRIVATE HFT_NUMA_AVAILABLE)
+        message(STATUS "NUMA library found: ${NUMA_LIBRARY}")
+    else()
+        message(STATUS "NUMA library not found - NUMA optimizations disabled")
+    endif()
 endif()
 
 # Compiler-specific options

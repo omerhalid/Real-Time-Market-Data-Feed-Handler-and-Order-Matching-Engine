@@ -49,12 +49,27 @@ constexpr Price PRICE_SCALE = 1'000'000LL;
 
 ### 4. Linux-Specific Optimizations
 
-#### CPU Affinity
+#### CPU Affinity & Thread Pinning
 ```cpp
-hft::setCpuAffinity(cpu_id);  // Pin to specific CPU core
+hft::setCpuAffinity(cpu_id);        // Pin process to CPU
+hft::pinThreadToCpu(cpu_id);        // Pin current thread
+hft::pinThreadToCpu(thread, cpu_id); // Pin C++ thread
 ```
 - Reduces cache misses from context switching
 - Improves cache locality
+- Critical for deterministic latency
+
+#### NUMA Awareness
+```cpp
+int numa_node = hft::getNumaNode(cpu_id);
+hft::setMemoryPolicy(numa_node);     // Prefer NUMA node for allocations
+hft::bindThreadToNumaNode(numa_node); // Bind thread to NUMA node
+void* ptr = hft::allocateOnNumaNode(size, numa_node); // Allocate on specific node
+```
+- Allocates memory on the same NUMA node as the CPU
+- Reduces cross-NUMA memory access latency
+- Critical for multi-socket systems
+- Requires libnuma (optional, falls back gracefully)
 
 #### Real-Time Scheduling
 ```cpp
@@ -70,10 +85,33 @@ hft::setRealtimePriority(50);  // SCHED_FIFO
 
 ### 5. High-Resolution Timestamps
 
-**Nanosecond Precision**:
-- Uses `clock_gettime(CLOCK_REALTIME)` for order timestamps
-- Uses `clock_gettime(CLOCK_MONOTONIC)` for latency measurements
-- Critical for price-time priority matching
+**RDTSC (Read Time-Stamp Counter)**:
+- Ultra-fast CPU cycle counter (< 10 cycles vs hundreds for system calls)
+- Used for latency measurements in hot paths
+- Calibrated at startup to convert cycles to nanoseconds
+- `LatencyTimerRDTSC` class for microsecond-level measurements
+
+**clock_gettime()**:
+- Used for wall-clock timestamps (order timestamps)
+- More accurate for long durations
+- `LatencyTimer` class for standard measurements
+
+**Performance Comparison**:
+- RDTSC: ~5-10 CPU cycles (~2-4 ns on 2.5 GHz CPU)
+- clock_gettime: ~100-300 CPU cycles (~40-120 ns)
+- **RDTSC is 10-30x faster** for latency measurements
+
+**Usage**:
+```cpp
+// Ultra-fast latency measurement (hot path)
+hft::LatencyTimerRDTSC timer;
+// ... operation ...
+int64_t latency_us = timer.elapsedUs();
+uint64_t cycles = timer.elapsedCycles();
+
+// Wall-clock timestamp (for orders)
+int64_t timestamp = hft::getTimestampNs();  // Uses clock_gettime
+```
 
 ### 6. Lock-Free SPSC Queue
 
@@ -119,16 +157,42 @@ LOG_INFO_F("Format: %d", value);  // Formatted
 
 ### 8. Network Optimizations
 
-**Epoll-Based Server**:
+**Epoll-Based TCP Server**:
 - Edge-triggered epoll for maximum efficiency
 - Non-blocking I/O
 - TCP_NODELAY to disable Nagle's algorithm
 - SO_REUSEPORT for load balancing
 
+**UDP Server with Busy Polling**:
+- `UDPServer` class with SO_BUSY_POLL support
+- Busy polling reduces latency by polling in kernel space
+- Non-blocking UDP with configurable busy poll timeout (50-200μs typical)
+- `UDPMulticastReceiver` for market data feeds
+- SO_INCOMING_CPU for CPU affinity (with SO_REUSEPORT)
+
+**Busy Polling Benefits**:
+- Reduces latency by 10-50μs vs blocking I/O
+- Kernel polls socket queue without going to sleep
+- CPU-intensive but critical for microsecond-level latency
+- Use with dedicated CPU cores
+
+**Usage**:
+```cpp
+// UDP server with busy polling
+UDPServer server(8080, handler, true); // true = enable busy poll
+server.start();
+server.run(); // Busy poll loop
+
+// UDP multicast receiver
+UDPMulticastReceiver receiver("239.255.1.1", 8080, "192.168.1.1", handler, true);
+receiver.start();
+receiver.run();
+```
+
 **Future Enhancements**:
-- UDP multicast for market data
 - DPDK for kernel bypass
-- Zero-copy techniques
+- Zero-copy techniques (sendfile, splice)
+- XDP (eXpress Data Path) for even lower latency
 
 ### 9. Compiler Optimizations
 

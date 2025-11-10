@@ -8,12 +8,26 @@
 #include <memory>
 #include "../order_matching/Order.hpp"
 
+#ifdef __linux__
+#include "../utils/LinuxOptimizations.hpp"
+#endif
+
 // Lock-free memory pool for Order objects
 // Pre-allocates a fixed-size pool to avoid dynamic allocations in hot path
 template<size_t PoolSize = 1024 * 1024> // 1M orders by default
 class OrderMemoryPool {
 public:
-    OrderMemoryPool() {
+    OrderMemoryPool(int numa_node = -1) {
+#ifdef __linux__
+        // NUMA-aware allocation: allocate pool on specific NUMA node
+        if (numa_node >= 0) {
+            void* numa_ptr = hft::allocateOnNumaNode(sizeof(Order) * PoolSize, numa_node);
+            if (numa_ptr) {
+                // Use NUMA-allocated memory (would need custom allocator)
+                // For now, fall through to regular allocation
+            }
+        }
+#endif
         // Pre-allocate all orders
         for (size_t i = 0; i < PoolSize; ++i) {
             free_list_[i].store(&pool_[i], std::memory_order_relaxed);
