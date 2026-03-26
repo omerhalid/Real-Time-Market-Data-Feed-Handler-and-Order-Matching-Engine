@@ -1,0 +1,1 @@
+/usr/bin/c++ -flto=auto -fno-fat-lto-objects  -Wl,-z,common-page-size=2097152 -static-libgcc -static-libstdc++ CMakeFiles/SnapTransportBench.dir/benchmarks/SnapTransportBench.cpp.o -o SnapTransportBench  -lrt 

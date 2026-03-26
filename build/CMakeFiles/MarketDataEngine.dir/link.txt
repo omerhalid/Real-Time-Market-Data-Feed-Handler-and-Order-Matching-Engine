@@ -1,0 +1,1 @@
+/usr/bin/c++ -flto=auto -fno-fat-lto-objects  -Wl,-z,common-page-size=2097152 -static-libgcc -static-libstdc++ CMakeFiles/MarketDataEngine.dir/src/main.cpp.o CMakeFiles/MarketDataEngine.dir/src/order_matching/OrderBook.cpp.o CMakeFiles/MarketDataEngine.dir/src/order_matching/Matcher.cpp.o -o bin/MarketDataEngine  -lrt 

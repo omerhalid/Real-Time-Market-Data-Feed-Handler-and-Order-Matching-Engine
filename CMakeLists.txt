@@ -111,6 +111,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     )
 endif()
 
+add_executable(SnapTransportBench benchmarks/SnapTransportBench.cpp)
+target_include_directories(SnapTransportBench PRIVATE include include/utils/snap/includes)
+target_link_libraries(SnapTransportBench PRIVATE Threads::Threads rt)
+# No special flags needed for now
+
 # Set output directory
 set_target_properties(MarketDataEngine PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
