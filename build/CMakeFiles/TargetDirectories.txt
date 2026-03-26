@@ -1,0 +1,8 @@
+/home/kunsh/Cpp/Snap/OpenSource/Feed-Handler/build/CMakeFiles/MarketDataEngine.dir
+/home/kunsh/Cpp/Snap/OpenSource/Feed-Handler/build/CMakeFiles/SnapTransportBench.dir
+/home/kunsh/Cpp/Snap/OpenSource/Feed-Handler/build/CMakeFiles/edit_cache.dir
+/home/kunsh/Cpp/Snap/OpenSource/Feed-Handler/build/CMakeFiles/rebuild_cache.dir
+/home/kunsh/Cpp/Snap/OpenSource/Feed-Handler/build/CMakeFiles/list_install_components.dir
+/home/kunsh/Cpp/Snap/OpenSource/Feed-Handler/build/CMakeFiles/install.dir
+/home/kunsh/Cpp/Snap/OpenSource/Feed-Handler/build/CMakeFiles/install/local.dir
+/home/kunsh/Cpp/Snap/OpenSource/Feed-Handler/build/CMakeFiles/install/strip.dir
